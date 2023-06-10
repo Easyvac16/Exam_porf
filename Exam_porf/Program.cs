@@ -1,11 +1,13 @@
-﻿using System.Numerics;
+﻿using System.Text;
 
 namespace Exam_porf
 {
     internal class Program
     {
+
         static void Main()
         {
+            Console.OutputEncoding = Encoding.Unicode;
             List<Question> easyQuestions = GetEasyQuestions();
             List<Question> mediumQuestions = GetMediumQuestions();
             List<Question> hardQuestions = GetHardQuestions();
@@ -23,6 +25,8 @@ namespace Exam_porf
             {
                 // Виведення питання та варіантів відповідей
                 Question currentQuestion = GetNextQuestion(player.QuestionLevel, easyQuestions, mediumQuestions, hardQuestions);
+                string text = currentQuestion.Text;
+                Console.WriteLine(text);
                 Answer.PrintAnswers(GetAnswersForQuestion(currentQuestion, easyAnswers, mediumAnswers, hardAnswers));
 
                 Console.Write("\nВаша відповідь (введіть номер варіанту): ");
@@ -94,6 +98,8 @@ namespace Exam_porf
                     return null;
             }
         }
+
+
 
         // Отримати випадкове запитання зі списку запитань
         static Question GetRandomQuestion(List<Question> questions)
@@ -199,7 +205,6 @@ namespace Exam_porf
             Console.WriteLine("\n[Допомога з залу] Більшість глядачів вважають, що правильна відповідь - " +
                               $"{question.CorrectAnswer.Text}.");
         }
-
 
         static List<Question> GetEasyQuestions()
         {
@@ -559,6 +564,7 @@ namespace Exam_porf
         public QuestionLevel Level { get; set; }
         public int PrizeMoney { get; set; }
         public Answer CorrectAnswer { get; set; }
+
     }
 
     // Клас, що представляє відповідь
