@@ -128,20 +128,34 @@ namespace Exam_porf
         // Отримати випадкові відповіді для питання
         static List<Answer> GetRandomAnswers(Question question, List<Answer> answers)
         {
-            Random random = new Random();
+            //Random random = new Random();
             List<Answer> randomAnswers = new List<Answer>();
             randomAnswers.Add(question.CorrectAnswer);
 
+            /*int i = 0;
             while (randomAnswers.Count < 4)
             {
-                int randomIndex = random.Next(0, answers.Count);
+                int randomIndex = random.Next(i, i+4);
                 Answer randomAnswer = answers[randomIndex];
 
-                if (!randomAnswers.Contains(randomAnswer))
-                    randomAnswers.Add(randomAnswer);
-            }
+                foreach (var item in randomAnswers)
+                {
+                    item.Cont(randomAnswer);
+                }
+            }*/
 
-            randomAnswers.Shuffle();
+            for (int i = 0; i < answers.Count; i+=4)
+            {
+                if(answers[i].Cont(question.CorrectAnswer) == true)
+                {
+                    randomAnswers.Add(answers[++i]);
+                    randomAnswers.Add(answers[++i]);
+                    randomAnswers.Add(answers[++i]);
+
+                    randomAnswers = ListExtensions.RandomSwap(randomAnswers);
+                    return randomAnswers;
+                }
+            }
             return randomAnswers;
         }
 
@@ -149,7 +163,7 @@ namespace Exam_porf
         static bool CheckAnswer(int userChoice, Question question, List<Answer> easyAnswers, List<Answer> mediumAnswers, List<Answer> hardAnswers)
         {
             List<Answer> answers = GetAnswersForQuestion(question, easyAnswers, mediumAnswers, hardAnswers);
-            Answer selectedAnswer = answers[userChoice - 1];
+            Answer selectedAnswer = answers[userChoice -1];
             return selectedAnswer.IsCorrect;
         }
 
@@ -568,7 +582,7 @@ namespace Exam_porf
     }
 
     // Клас, що представляє відповідь
-    class Answer
+    record Answer
     {
         public string Text { get; set; }
         public bool IsCorrect { get; set; }
@@ -580,6 +594,9 @@ namespace Exam_porf
                 Console.WriteLine($"{i + 1}. {answers[i].Text}");
             }
         }
+
+        public bool Cont(Answer answer) => (this.Text == answer.Text && this.IsCorrect == answer.IsCorrect);
+
     }
 
     // Перерахування для рівнів запитань
@@ -618,17 +635,18 @@ namespace Exam_porf
     {
         private static Random random = new Random();
 
-        public static void Shuffle<T>(this IList<T> list)
+        public static List<Answer> RandomSwap(List<Answer> list)
         {
             int n = list.Count;
             while (n > 1)
             {
                 n--;
                 int k = random.Next(n + 1);
-                T value = list[k];
+                var value = list[k];
                 list[k] = list[n];
                 list[n] = value;
             }
+            return list;
         }
     }
 
